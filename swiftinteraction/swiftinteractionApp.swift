@@ -6,9 +6,21 @@
 //
 
 import SwiftUI
+import NearbyInteraction
+import MultipeerConnectivity
 
 @main
-struct swiftinteractionApp: App {
+struct swiftinteractionApp: App{
+
+    init() {
+        print("test")
+        
+        guard NISession.isSupported else {
+            print("This device doesn't support Nearby Interaction.")
+            return
+        }
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
