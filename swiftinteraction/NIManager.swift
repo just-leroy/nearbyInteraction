@@ -1,14 +1,14 @@
 //
-//  sessionHandler.swift
+//  NIManager.swift
 //  swiftinteraction
 //
-//  Created by Leroy on 17/01/2022.
+//  Created by Leroy on 28/01/2022.
 //
 
 import Foundation
 import NearbyInteraction
 
-class SessionHandler: NSObject, NISessionDelegate {
+class NIManager: NSObject, NISessionDelegate {
     
     func onStartup() {
         

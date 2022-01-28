@@ -13,7 +13,7 @@ struct ContentView: View {
     
     //Door deze te vermelden als @Stateobject wordt de ui geupdate wanneer @Published properties in deze class wordt gewijzigd.
     @StateObject var peerManager: MPCManager = MPCManager()
-    var sessionHandler: SessionHandler = SessionHandler()
+    var NIManager: NIManager = NIManager()
     
     init() {
         print("app started")
