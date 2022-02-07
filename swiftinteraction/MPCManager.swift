@@ -10,26 +10,27 @@ import MultipeerConnectivity //framework that uses wifi/bluetooth to connect
 import NearbyInteraction
 
 //
-class MPCManager: NSObject, MCNearbyServiceBrowserDelegate, MCNearbyServiceAdvertiserDelegate, MCSessionDelegate, MCBrowserViewControllerDelegate, ObservableObject, NISessionDelegate {
+class MPCManager: NSObject, MCNearbyServiceBrowserDelegate, MCNearbyServiceAdvertiserDelegate, MCSessionDelegate, MCBrowserViewControllerDelegate, NISessionDelegate {
     
     var peerID: MCPeerID
-    var niSession: NISession? //uwb
+    var niManager: NIManager
+//    var niSession: NISession? //uwb
     //NISession toevoegen
     var mcSession: MCSession
     var mcAdvertiserAssistant: MCNearbyServiceAdvertiser?
-    var peerConnected = false
+//    var niManager: NIManager
     
     //Aan de hand van een @published wordt de ui geupdate wanneer deze property veranderd. Dit kan omdat deze class een observableObject protocol bevat.
-    @Published var distance: String = "0"
+//    @Published var distance: String = "0"
     
-    override init(){
+    init(niManager: NIManager){
         print("mpcManager started")
         peerID = MCPeerID(displayName: UIDevice.current.name)
         mcSession = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .required)
+        self.niManager = niManager
         
         super.init()
         mcSession.delegate = self
-        //uwb
     }
     
     //MARK: - MPC Connect Functions
@@ -80,10 +81,8 @@ class MPCManager: NSObject, MCNearbyServiceBrowserDelegate, MCNearbyServiceAdver
             print("\(peerID) state: connected")
             
             //TODO: //stopadvertising/stopbrowsing (ff checken waar dit moet)
-            if niSession == nil {
-                print("creating niSession")
-                niSession = NISession()
-                niSession?.delegate = self
+            if niManager.session == nil {
+                niManager.start()
                 sendDiscoveryToken()
             }
             //zodra er een connectie is hier een NIsession initialiseren.
@@ -98,16 +97,8 @@ class MPCManager: NSObject, MCNearbyServiceBrowserDelegate, MCNearbyServiceAdver
     }
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        // deze gebruiken om data te ontvangen
         print("Token recieved")
-        
-        receivedDiscoveryToken(data: data)
-        //        let str = String(decoding: data, as: UTF8.self)
-        //        token = str
-        //        print(str)
-        //if Nisession is nill and config is nill
-        //uncrypt token met NSKeyedunarchiver
-        //sendToken terug als ik token nog niet heb geintialliseerd.
+        niManager.startSession(data: data)
     }
     
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
@@ -153,7 +144,7 @@ class MPCManager: NSObject, MCNearbyServiceBrowserDelegate, MCNearbyServiceAdver
         print("Trying to send discoverytoken")
         if mcSession.connectedPeers.count > 0 {
             
-            guard let dataToken = niSession?.discoveryToken,
+            guard let dataToken = niManager.discoveryToken,
                   let data = try? NSKeyedArchiver.archivedData(withRootObject: dataToken, requiringSecureCoding: true) else {
                       fatalError("can't convert token to data")
                   }
@@ -168,38 +159,29 @@ class MPCManager: NSObject, MCNearbyServiceBrowserDelegate, MCNearbyServiceAdver
         }
     }
     
-    func receivedDiscoveryToken(data: Data) {
-        print("Trying to setup ni-connection")
-        guard let token = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NIDiscoveryToken.self, from: data) else {
-            fatalError("Unexpectedly failed to encode discovery token.")
-        }
-        let configuration = NINearbyPeerConfiguration(peerToken: token)
-        niSession?.run(configuration)
-    }
-    
     // MARK: - NISessionDelegate functions
     
-    func session(_ session: NISession, didUpdate nearbyObjects: [NINearbyObject]) {
-        print(nearbyObjects)
-        
-        distance = String(nearbyObjects.first?.distance ?? 0)
-    }
-    
-    func session(_ session: NISession, didRemove nearbyObjects: [NINearbyObject], reason: NINearbyObject.RemovalReason) {
-        
-    }
-    
-    func sessionWasSuspended(_ session: NISession) {
-        
-    }
-    
-    func sessionSuspensionEnded(_ session: NISession) {
-        
-    }
-    
-    func session(_ session: NISession, didInvalidateWith error: Error) {
-        
-    }
+//    func session(_ session: NISession, didUpdate nearbyObjects: [NINearbyObject]) {
+//        print(nearbyObjects)
+//
+//        distance = String(nearbyObjects.first?.distance ?? 0)
+//    }
+//
+//    func session(_ session: NISession, didRemove nearbyObjects: [NINearbyObject], reason: NINearbyObject.RemovalReason) {
+//
+//    }
+//
+//    func sessionWasSuspended(_ session: NISession) {
+//
+//    }
+//
+//    func sessionSuspensionEnded(_ session: NISession) {
+//
+//    }
+//
+//    func session(_ session: NISession, didInvalidateWith error: Error) {
+//
+//    }
 }
 
 
