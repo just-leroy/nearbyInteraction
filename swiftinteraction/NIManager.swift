@@ -10,6 +10,8 @@ import NearbyInteraction
 
 class NIManager: NSObject, NISessionDelegate, ObservableObject {
     
+    static let shared = NIManager()
+    
     @Published var distance: String = "0"
     var nearbyObjects: NINearbyObject?
     var session: NISession?

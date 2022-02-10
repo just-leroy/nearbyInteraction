@@ -12,12 +12,8 @@ import MultipeerConnectivity
 struct ContentView: View {
     
     //Door deze te vermelden als @StateObject wordt de ui geupdate wanneer @Published properties in deze class wordt gewijzigd.
-    @StateObject var niManager: NIManager = NIManager()
-    var mpcManager: MPCManager?
-    
-    init() {
-        mpcManager = MPCManager(niManager: niManager)
-    }
+    @StateObject var niManager: NIManager = NIManager.shared
+    var mpcManager: MPCManager = MPCManager()
     
     //MARK: - User Interface
     
@@ -29,21 +25,21 @@ struct ContentView: View {
             
             Button {
                 print("Clicked on host")
-                mpcManager?.startAdvertising()
+                mpcManager.startAdvertising()
             } label: {
                 Text("HOST")
             }
             
             Button {
                 print("Clicked on join")
-                mpcManager?.sendInvite()
+                mpcManager.sendInvite()
             } label: {
                 Text("JOIN")
             }
             
             Button {
                 print("Clicked on send token")
-                mpcManager?.sendToken(token: "Hello there")
+                mpcManager.sendToken(token: "Hello there")
             } label: {
                 Text("Send Token")
             }

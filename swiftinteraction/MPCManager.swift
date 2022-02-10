@@ -23,11 +23,11 @@ class MPCManager: NSObject, MCNearbyServiceBrowserDelegate, MCNearbyServiceAdver
     //Aan de hand van een @published wordt de ui geupdate wanneer deze property veranderd. Dit kan omdat deze class een observableObject protocol bevat.
 //    @Published var distance: String = "0"
     
-    init(niManager: NIManager){
+    override init(){
         print("mpcManager started")
         peerID = MCPeerID(displayName: UIDevice.current.name)
         mcSession = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .required)
-        self.niManager = niManager
+        niManager = NIManager.shared
         
         super.init()
         mcSession.delegate = self
