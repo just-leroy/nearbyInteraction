@@ -12,6 +12,10 @@ class NIManager: NSObject, NISessionDelegate, ObservableObject {
     
     static let shared = NIManager()
     
+    private override init() {
+        
+    }
+    
     @Published var distance: String = "0"
     var nearbyObjects: NINearbyObject?
     var session: NISession?

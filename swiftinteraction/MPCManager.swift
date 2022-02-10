@@ -14,14 +14,8 @@ class MPCManager: NSObject, MCNearbyServiceBrowserDelegate, MCNearbyServiceAdver
     
     var peerID: MCPeerID
     var niManager: NIManager
-//    var niSession: NISession? //uwb
-    //NISession toevoegen
     var mcSession: MCSession
     var mcAdvertiserAssistant: MCNearbyServiceAdvertiser?
-//    var niManager: NIManager
-    
-    //Aan de hand van een @published wordt de ui geupdate wanneer deze property veranderd. Dit kan omdat deze class een observableObject protocol bevat.
-//    @Published var distance: String = "0"
     
     override init(){
         print("mpcManager started")
@@ -73,7 +67,6 @@ class MPCManager: NSObject, MCNearbyServiceBrowserDelegate, MCNearbyServiceAdver
     //MARK: - MPC Functions
     
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-        //check the connected state
         switch state {
         case.connecting:
             print("\(peerID) state: connecting")
@@ -85,9 +78,6 @@ class MPCManager: NSObject, MCNearbyServiceBrowserDelegate, MCNearbyServiceAdver
                 niManager.start()
                 sendDiscoveryToken()
             }
-            //zodra er een connectie is hier een NIsession initialiseren.
-            //Discovery token verzenden.
-            //Token omzetten naar NSData object kan met NSKeyedarchiver
             
         case.notConnected:
             print("\(peerID) state: not connected")
@@ -158,30 +148,6 @@ class MPCManager: NSObject, MCNearbyServiceBrowserDelegate, MCNearbyServiceAdver
             print("You are not connected to other devices")
         }
     }
-    
-    // MARK: - NISessionDelegate functions
-    
-//    func session(_ session: NISession, didUpdate nearbyObjects: [NINearbyObject]) {
-//        print(nearbyObjects)
-//
-//        distance = String(nearbyObjects.first?.distance ?? 0)
-//    }
-//
-//    func session(_ session: NISession, didRemove nearbyObjects: [NINearbyObject], reason: NINearbyObject.RemovalReason) {
-//
-//    }
-//
-//    func sessionWasSuspended(_ session: NISession) {
-//
-//    }
-//
-//    func sessionSuspensionEnded(_ session: NISession) {
-//
-//    }
-//
-//    func session(_ session: NISession, didInvalidateWith error: Error) {
-//
-//    }
 }
 
 
